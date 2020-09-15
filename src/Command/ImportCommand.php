@@ -25,6 +25,7 @@ class ImportCommand extends Command
 
     /**
      * ImportCommand constructor.
+     * @param string $srcKoatuu
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
