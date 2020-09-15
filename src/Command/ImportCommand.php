@@ -24,6 +24,7 @@ class ImportCommand extends Command
 
     /**
      * ImportCommand constructor.
+     * @param string $srcKoatuu
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
@@ -41,24 +42,11 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->loadFile();
-
         $this->getContent();
 
         $this->parseRegions();
         $this->writeRegions();
         return 0;
-    }
-
-    /**
-     * @return array
-     */
-    public function getContent()
-    {
-        /** @var  $reader */
-        $reader = new Xls();
-        $spreadsheet = $reader->load('/var/www/app/data/koatuu/KOATUU_30072020.xls');
-        $content = $spreadsheet->getActiveSheet()->toArray();
-        return $content;
     }
 
     public function loadFile()
@@ -73,9 +61,29 @@ class ImportCommand extends Command
         $zip = new \ZipArchive();
 
         if ($zip->open($zipKoatuu) === TRUE) {
-            $zip->extractTo($dir, 'koatuu/KOATUU_30072020.xls');
+            for ($i = 0; $i < $zip->numFiles; ++$i) {
+                $index = $zip->statIndex($i);
+                if ("KOATUU_" === substr($index['name'], 0, 7)) {
+                    $zip->extractTo($dir, $index['name']);
+                }
+            }
             $zip->close();
+            unlink($zipKoatuu);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getContent()
+    {
+        $dir = '/var/www/app/data/';
+        $file = scandir($dir);
+        /** @var  $reader */
+        $reader = new Xls();
+        $spreadsheet = $reader->load($dir . $file[2]);
+        $content = $spreadsheet->getActiveSheet()->toArray();
+        return $content;
     }
 
     /**
