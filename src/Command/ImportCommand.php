@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 
-use App\Entity\District;
 use App\Entity\Region;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
@@ -47,6 +46,7 @@ class ImportCommand extends Command
 
         $this->parseRegions();
         $this->writeRegions();
+
         return 0;
     }
 
