@@ -19,6 +19,6 @@
   * Создание `Entity` и метод `writeRegions()` для запись в таблицу
 
 ### Как использовать
-`docker-compose up -d`
-для бд: `doctrine:migration:migrate` (если не создана таблица)
-`bin/console app:import` 
+* `docker-compose up -d`
+* для бд: `doctrine:migration:migrate`
+* `bin/console app:import` 
