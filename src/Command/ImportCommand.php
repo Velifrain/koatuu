@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class ImportCommand
@@ -41,7 +42,6 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->loadFile();
-
         $this->getContent();
 
         $this->parseRegions();
@@ -49,20 +49,11 @@ class ImportCommand extends Command
         return 0;
     }
 
-    /**
-     * @return array
-     */
-    public function getContent()
-    {
-        /** @var  $reader */
-        $reader = new Xls();
-        $spreadsheet = $reader->load('/var/www/app/data/koatuu/KOATUU_30072020.xls');
-        $content = $spreadsheet->getActiveSheet()->toArray();
-        return $content;
-    }
-
     public function loadFile()
     {
+        /** @var Filesystem $filesystem */
+        $filesystem = new Filesystem();
+        $filesystem->mkdir('/var/www/app/data');
 
         $url = 'http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip';
         $dir = '/var/www/app/data/';
@@ -73,9 +64,29 @@ class ImportCommand extends Command
         $zip = new \ZipArchive();
 
         if ($zip->open($zipKoatuu) === TRUE) {
-            $zip->extractTo($dir, 'koatuu/KOATUU_30072020.xls');
+            for ($i = 0; $i < $zip->numFiles; ++$i) {
+                $index = $zip->statIndex($i);
+                if ("KOATUU_" === substr($index['name'], 0, 7)) {
+                    $zip->extractTo($dir, $index['name']);
+                }
+            }
             $zip->close();
+            unlink($zipKoatuu);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getContent()
+    {
+        $dir = '/var/www/app/data/';
+        $file = scandir($dir);
+        /** @var  $reader */
+        $reader = new Xls();
+        $spreadsheet = $reader->load($dir . $file[2]);
+        $content = $spreadsheet->getActiveSheet()->toArray();
+        return $content;
     }
 
     /**
