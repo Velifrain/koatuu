@@ -46,7 +46,6 @@ class ImportCommand extends Command
 
         $this->parseRegions();
         $this->writeRegions();
-
         return 0;
     }
 
