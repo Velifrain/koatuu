@@ -47,6 +47,9 @@ class ImportCommand extends Command
 
         $this->parseRegions();
         $this->writeRegions();
+
+        //$this->parseDistrict(); // TODO:
+        //$this->writeDistricts(); // TODO:
         return 0;
     }
 
@@ -103,6 +106,32 @@ class ImportCommand extends Command
             $region->setCode($regionValue[0]);
             $region->setName($regionValue[2]);
             $this->entityManager->persist($region);
+        }
+        $this->entityManager->flush();
+        $this->entityManager->clear();
+    }
+
+    public function parseDistrict()
+    {
+        $districts = [];
+        foreach ($this->getContent() as $district) {
+            if (preg_grep('/^\d{2}(?!(0){3})\d{3}(0{5})$/', $district)) {
+                $districts[] = $district;
+            }
+        }
+        return $districts;
+    }
+
+
+    public function writeDistricts()
+    {
+        foreach ($this->parseDistrict() as $districtValue) {
+
+            $district = new District();
+            $district->setCode($districtValue[0]);
+            $district->setName($districtValue[2]);
+            $this->entityManager->persist($district);
+
         }
         $this->entityManager->flush();
         $this->entityManager->clear();
