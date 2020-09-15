@@ -21,7 +21,8 @@
 ### Как использовать
 >> Комманды выполнять в папке проекта. Скачиваем архив извлекаем данные или клонируем проект, используем любую удобную консоль
 * `docker-compose up -d --build` cобираем и запускаем проект 
-* `docker-compose exec php bin/console doctrine:migrations:migrate` выполняем миграцию указанной версии или последней доступной версии 
+* `docker-compose exec php composer install` проводим установку актуальных версий пакетов, в соответствии с инструкциями файла composer.json
+* `docker-compose exec php bin/console doctrine:migrations:migrate` выполняем миграцию указанной версии или последней доступной версии для создания таблицы, запросит продолжить или нет `...(yes/no) [yes]:` нажимаем enter
 * `docker-compose exec php bin/console app:import` запускаем комманду выполняющую импорт данных
 * `docker-compose exec postgres psql -U postgres` заходим в контейнер postgres
 * `\c koatuu;` выбрать базу данных koatuu
