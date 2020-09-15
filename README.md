@@ -16,9 +16,14 @@
   * Создание метода `loadFile()` для загрузки архива с сайта `http://www.ukrstat.gov.ua/klasf/st_kls/op_koatuu_2016.htm` и извлечение с архива
   * Создание метода `getContent()`, дополнительно установлена библиотека для работы office документами <https://github.com/PHPOffice>, для получения информации с `Xls` файла
   * Создание метода `parseRegions()` разбора данных подходящих для Областей
-  * Создание `Entity` и метод `writeRegions()` для запись в таблицу
+  * Создание `Entity` и метод `writeRegions()` для записи данных в таблицу
 
 ### Как использовать
-* `docker-compose up -d` / `docker-compose up -d --build`
-* для бд: `doctrine:migrations:migrate`
-* `bin/console app:import` 
+>> Комманды выполнять в папке проекта. Скачиваем архив извлекаем данные или клонируем проект, используем любую удобную консоль
+* `docker-compose up -d --build` cобираем и запускаем проект 
+* `docker-compose exec php bin/console doctrine:migrations:migrate` выполняем миграцию указанной версии или последней доступной версии 
+* `docker-compose exec php bin/console app:import` запускаем комманду выполняющую импорт данных
+* `docker-compose exec postgres psql -U postgres` заходим в контейнер postgres
+* `\c koatuu;` выбрать базу данных koatuu
+* `select * from region;` отобразить данные таблицы
+* `\q` для выхода с базы данных
