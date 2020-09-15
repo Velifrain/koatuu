@@ -14,7 +14,7 @@ class Region
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="IDENTITY", options={"default"="nextval('region_id_seq'::regclass)"})
      * @ORM\Column(type="integer")
      */
     private $id;
