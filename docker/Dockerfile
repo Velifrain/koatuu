@@ -19,6 +19,7 @@ RUN apt-get install -y\
 #       for php gd extension
         libfreetype6-dev \
         libjpeg62-turbo-dev \
+        zip \
     && docker-php-ext-install \
         pdo \
         pdo_pgsql \
@@ -39,6 +40,10 @@ RUN pecl install xdebug-2.9.1 \
     && echo "xdebug.profiler_output_dir=/tmp/snapshots" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.max_nesting_level=9999" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.profiler_enable_trigger=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install -j$(nproc) gd \
+  && docker-php-source delete
 
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php\

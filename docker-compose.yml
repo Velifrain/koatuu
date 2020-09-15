@@ -26,7 +26,7 @@ services:
 
   postgres:
     container_name: koatuu-postgres
-    image: postgres:alpine
+    image: postgres:11-alpine
     restart: always
     working_dir: /var/www/app
     environment:
